@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   StyledError,
   StyledForm,
@@ -28,48 +28,42 @@ const schema = Yup.object().shape({
     )
     .required('Number is a required field'),
 });
-
-export class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
+// it is initial value of our input
+const initialValue = {
+  name: '',
+  number: '',
+};
+// we use CLASS ONLY when we need state = {}
+export const ContactForm = ({ onAdd }) => {
+  const handleSubmit = (values, actions) => {
+    // all values from initialValues when we click 'submit'
+    // if it is class and not just const we need to use this.props.FUNCTION() if we want to use a functioon from the main page (APP)
+    onAdd({ ...values, id: nanoid() });
+    actions.resetForm();
   };
 
-  render() {
-    return (
-      <Formik
-        // it is initial value of our input
-        initialValues={{
-          name: '',
-          number: '',
-        }}
-        validationSchema={schema}
-        onSubmit={(values, actions) => {
-          // all values from initialValues when we click 'submit'
-          // if it is class and not just const we need to use this.props.FUNCTION() if we want to use a functioon from the main page (APP)
-          this.props.onAdd({ ...values, id: nanoid() });
-          actions.resetForm();
-        }}
-      >
-        <StyledForm>
-          <label>
-            Name
-            <StyledField name="name" placeholder="Max Poirier" />
-            <StyledError name="name" component="div" />
-          </label>
-          <label>
-            Number
-            <StyledField type="tel" name="number" placeholder="+380931074242" />
-            <StyledError name="number" component="div" />
-          </label>
-          <StyledButton type="submit" onSubmit={this.onSubmit}>
-            Add contact
-          </StyledButton>
-        </StyledForm>
-      </Formik>
-    );
-  }
-}
+  return (
+    <Formik
+      initialValues={initialValue}
+      validationSchema={schema}
+      onSubmit={handleSubmit}
+    >
+      <StyledForm>
+        <label>
+          Name
+          <StyledField name="name" placeholder="Max Poirier" />
+          <StyledError name="name" component="div" />
+        </label>
+        <label>
+          Number
+          <StyledField type="tel" name="number" placeholder="+380931074242" />
+          <StyledError name="number" component="div" />
+        </label>
+        <StyledButton type="submit">Add contact</StyledButton>
+      </StyledForm>
+    </Formik>
+  );
+};
 
 ContactForm.propTypes = {
   onAdd: PropTypes.func.isRequired,

@@ -18,21 +18,21 @@ export class App extends Component {
 
   handleAddContact = newContact => {
     const isExist = this.state.contacts.some(
-      contact => contact.name === newContact.name
+      contact =>
+        contact.name.toLocaleLowerCase() === newContact.name.toLocaleLowerCase()
     );
 
     if (isExist) {
       alert(`${newContact.name} is already in contacts.`);
       return;
-    } else {
-      // overwrite the excisting data
-      // newContact is an object (initialValues) with name, id and number
-      this.setState(prevState => {
-        return {
-          contacts: [...prevState.contacts, newContact],
-        };
-      });
     }
+    // overwrite the excisting data
+    // newContact is an object (initialValues) with name, id and number
+    this.setState(prevState => {
+      return {
+        contacts: [...prevState.contacts, newContact],
+      };
+    });
   };
 
   handleChangeFilter = newFilter => {
@@ -63,7 +63,7 @@ export class App extends Component {
   }
 
   // we use it for doing something with the data after the each update, e.g. push it to localStorage
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevState) {
     if (this.state.contacts !== prevState.contacts) {
       localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
     }
